@@ -1,60 +1,38 @@
-import axios from 'axios';
-axios.defaults.headers.common['x-api-key'] =
-  'live_B8OSCQ5VxA8A6jzoI9ViRvuQqj7cRhUSI2DCw8ixHFLrbBY78Sg2z8hVzy0Cjfyi';
+// import axios from 'axios';
+// axios.defaults.headers.common['x-api-key'] =
+//   'live_B8OSCQ5VxA8A6jzoI9ViRvuQqj7cRhUSI2DCw8ixHFLrbBY78Sg2z8hVzy0Cjfyi';
 import getRefs from './get-refs';
+import * as API from './cat-api.js';
+
 
 const refs = getRefs();
+// const Axios = require('axios').default;
 
-// refs.catSearch.setAttribute('size', 10);
-// import axiosConfig from './axios-config.js';
+API.fetchBreeds('https://api.thecatapi.com/v1/breeds')
+.then(renderBreedSelect);
 
-// const AXIOSCONFIG = axiosConfig();
+function renderBreedSelect(response) {
+      // return response.data.map(({ id, name }) => ({ id, name }));
+    const breeds = response.data.map(
+      ({ id, name }) => `<option value="${id}">${name}</option>`
+    );
+    const breedsString = breeds.join('');
+    refs.catSearch.insertAdjacentHTML('afterbegin', breedsString);
+    // console.log(breedsString);
+}
 
-axios.defaults.baseURL = 'https://api.thecatapi.com/v1/breeds';
+refs.catSearch.addEventListener('change', onBreesSelected);
 
-// const url = `https://api.thecatapi.com/v1`;
-// const api_key =
-//   'live_B8OSCQ5VxA8A6jzoI9ViRvuQqj7cRhUSI2DCw8ixHFLrbBY78Sg2z8hVzy0Cjfyi';
-// let storedBreeds = [];
+function onBreesSelected(evt) {
+  console.log(refs.catSearch.value);
+}
 
-// fetch(axios.defaults.baseURL, {
-//   headers: {
-//     'x-api-key': axios.defaults.headers.common['x-api-key'],
-//   },
-// })
-//     .then(response => {
-//               console.log(response);
-
-//     return response.json();
-//   })
-//   .then(data => {
-//     const breeds = data.map(({ id, name }) => ({ id, name }));
-//     // console.log(breeds);
-//     return breeds;
-//   });
-// // }
-const Axios = require('axios').default;
-
-
-
-
-// function fetchAllBreed() {
-//   return (
-    // Axios
-    //   .get()
-    //   .then(response => {
-    //     const breeds = response.data.map(({ id, name }) => ({ id, name }));
-    //     console.log(breeds);
-    //     //   response.json();
-    //   })
+// Axios.get('https://api.thecatapi.com/v1/breeds').then(response => {
+//   const breeds = response.data.map(
+//     ({ id, name }) => `<option value="${id}">${name}</option>`
 //   );
-// }
-
-
-    Axios.get().then(response => {
-      const breeds = response.data.map(({ id, name }) => (`<option id="${id}">${name}</option>`));
-        const breedsString = breeds.join('');
-        refs.catSearch.insertAdjacentHTML("afterbegin", breedsString);
-        console.log(breedsString);
-      //   response.json();
-    });
+//   const breedsString = breeds.join('');
+//   refs.catSearch.insertAdjacentHTML('afterbegin', breedsString);
+//   console.log(breedsString);
+//   //   response.json();
+// });
