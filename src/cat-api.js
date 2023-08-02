@@ -11,6 +11,12 @@ function fetchBreeds(url) {
     //   //   response.json();
   }
 
-  function fetchCatByBreed(breedId) {}
+function fetchCatByBreed(breedId) {
+        return Axios.get(`https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}`);
+        //   const breedsString = breeds.join('');
+        //   refs.catSearch.insertAdjacentHTML('afterbegin', breedsString);
+        //   console.log(breedsString);
+        //   //   response.json();
+  }
 
 export { fetchBreeds,  fetchCatByBreed };

@@ -1,38 +1,43 @@
-// import axios from 'axios';
-// axios.defaults.headers.common['x-api-key'] =
-//   'live_B8OSCQ5VxA8A6jzoI9ViRvuQqj7cRhUSI2DCw8ixHFLrbBY78Sg2z8hVzy0Cjfyi';
+
 import getRefs from './get-refs';
 import * as API from './cat-api.js';
 
-
 const refs = getRefs();
-// const Axios = require('axios').default;
 
-API.fetchBreeds('https://api.thecatapi.com/v1/breeds')
-.then(renderBreedSelect);
+API.fetchBreeds('https://api.thecatapi.com/v1/breeds').then(renderBreedsList);
 
-function renderBreedSelect(response) {
-      // return response.data.map(({ id, name }) => ({ id, name }));
-    const breeds = response.data.map(
-      ({ id, name }) => `<option value="${id}">${name}</option>`
-    );
-    const breedsString = breeds.join('');
-    refs.catSearch.insertAdjacentHTML('afterbegin', breedsString);
-    // console.log(breedsString);
+function renderBreedsList(breedsList) {
+  const breeds = breedsList.data.map(
+    ({ id, name }) => `<option value="${id}">${name}</option>`
+  );
+  const breedsString = breeds.join('');
+  refs.catSearch.insertAdjacentHTML('afterbegin', breedsString);
 }
 
 refs.catSearch.addEventListener('change', onBreesSelected);
 
 function onBreesSelected(evt) {
-  console.log(refs.catSearch.value);
+  const breedId = refs.catSearch.value;
+  API.fetchCatByBreed(breedId).then(renderSelectBreed);
 }
 
-// Axios.get('https://api.thecatapi.com/v1/breeds').then(response => {
-//   const breeds = response.data.map(
-//     ({ id, name }) => `<option value="${id}">${name}</option>`
-//   );
-//   const breedsString = breeds.join('');
-//   refs.catSearch.insertAdjacentHTML('afterbegin', breedsString);
-//   console.log(breedsString);
-//   //   response.json();
-// });
+function renderSelectBreed(breed) {
+  const { url } = breed.data[0];
+  const { name, description, temperament } = breed.data[0].breeds[0];
+  const catInfoString = makecatInfoString(url, name, description, temperament);
+  refs.catInfo.insertAdjacentHTML('afterbegin', catInfoString);
+}
+
+function makecatInfoString(url, name, description, temperament) {
+return `<ul style="list-style-type: none; display: flex;">
+  <li style="width: "50%"">
+  <img src="${url}" alt="${name}" width="460px" />
+  </li>
+  <li style="padding-left: '80px'">
+  <h2>${name}</h2>
+  <p>${description}</p>
+  <p><strong>Temperament: </strong>${temperament}</p>
+  </li>
+  </ul>`;
+ }
+
