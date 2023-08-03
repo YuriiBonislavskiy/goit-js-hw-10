@@ -10,7 +10,7 @@ import * as API from './cat-api.js';
 
 function isHidden(evt) {
   //   console.log('uoouipoipipipi');
-  evt.classList.add('isHidden');
+  evt.classList.toggle('isHidden');
   console.log(evt);
 }
 
@@ -30,15 +30,12 @@ function selectBuilds(selectElement) {
   });
 }
 
-refs.loadingText.classList.remove('isHidden');
-console.log(refs.loadingText);
-
-API.axiosBreeds('https://api.thecatapi.com/v1/breeds')
+API.axiosBreeds(refs.loadingText, 'https://api.thecatapi.com/v1/breeds')
   .then(renderAxiosBreedsList)
   .catch()
   .finally(isHidden(refs.loadingText));
 
-API.fetchBreeds('https://api.thecatapi.com/v1/breeds')
+API.fetchBreeds(refs.loadingText, 'https://api.thecatapi.com/v1/breeds')
   .then(response => response.json())
   .then(renderFetchBreedsList)
   .catch()
@@ -59,29 +56,13 @@ function renderAxiosBreedsList(breedsList) {
   selectBuilds(refs.axiosBreedSelect);
 }
 
-function renderFetchBreedsList(breedsList) {
-  //   console.log(breedsList);
-  const breeds = breedsList.map(
-    ({ id, name }) => `<option value="${id}">${name}</option>`
-  );
-  const breedsString =
-    `<option data-placeholder="true"></option><option value="qwqwq">Error Positionn</option>` +
-    breeds.join('');
-  refs.axiosBreedSelect.insertAdjacentHTML('afterbegin', breedsString);
-  refs.fetchBreedSelect.insertAdjacentHTML('afterbegin', breedsString);
-  selectBuilds(refs.fetchBreedSelect);
-}
-
 refs.axiosBreedSelect.addEventListener('change', onAxiosBreedsSelected);
 refs.fetchBreedSelect.addEventListener('change', onFetchBreedsSelected);
 
 function onAxiosBreedsSelected(evt) {
   isHidden(refs.loadingText);
   const breedId = evt.target.value;
-  API.axiosCatByBreed(breedId)
-    .then(axiosRenderSelectBreed)
-    .catch()
-    .finally(isHidden(refs.loadingText));
+  API.axiosCatByBreed(breedId).then(axiosRenderSelectBreed).catch().finally();
 }
 
 function onFetchBreedsSelected(evt) {
@@ -91,7 +72,7 @@ function onFetchBreedsSelected(evt) {
     .then(response => response.json())
     .then(fetchRenderSelectBreed)
     .catch()
-    .finally(isHidden(refs.loadingText));
+    .finally();
 }
 
 function axiosRenderSelectBreed(breed) {
@@ -103,11 +84,24 @@ function axiosRenderSelectBreed(breed) {
 }
 
 function fetchRenderSelectBreed(breed) {
-  console.log(breed);
+  //   console.log(breed);
   const { url } = breed[0];
   const { name, description, temperament } = breed[0].breeds[0];
   const catInfoString = makecatInfoString(url, name, description, temperament);
   outputBreed(catInfoString);
+}
+
+function renderFetchBreedsList(breedsList) {
+  //   console.log(breedsList);
+  const breeds = breedsList.map(
+    ({ id, name }) => `<option value="${id}">${name}</option>`
+  );
+  const breedsString =
+    `<option data-placeholder="true"></option><option value="qwqwq">Error Positionn</option>` +
+    breeds.join('');
+  refs.axiosBreedSelect.insertAdjacentHTML('afterbegin', breedsString);
+  refs.fetchBreedSelect.insertAdjacentHTML('afterbegin', breedsString);
+  selectBuilds(refs.fetchBreedSelect);
 }
 
 function makecatInfoString(url, name, description, temperament) {
@@ -124,8 +118,8 @@ function makecatInfoString(url, name, description, temperament) {
 }
 
 function outputBreed(catInfoString) {
-  refs.catInfo.innerHTML = catInfoString;
-
-  const currentCatImg = document.querySelector('#current-cat-img');
-  currentCatImg.addEventListener('load', isHidden(refs.loadingText));
+    refs.catInfo.innerHTML = catInfoString;
+    isHidden(refs.loadingText);
+//   const currentCatImg = document.querySelector('#current-cat-img');
+//   currentCatImg.addEventListener('load', isHidden(refs.loadingText));
 }
