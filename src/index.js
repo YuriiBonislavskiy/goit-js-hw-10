@@ -11,6 +11,7 @@ import * as API from './cat-api.js';
 function isHidden(evt) {
   //   console.log('uoouipoipipipi');
   evt.classList.add('isHidden');
+  console.log(evt);
 }
 
 function noHidden(evt) {
@@ -28,21 +29,22 @@ function selectBuilds(selectElement) {
     },
   });
 }
-requestCatBreedsList();
 
-function requestCatBreedsList() {
-  noHidden(refs.loadingText);
-  API.axiosBreeds('https://api.thecatapi.com/v1/breeds')
-    .then(renderAxiosBreedsList)
-    .catch()
-    .finally(isHidden(refs.loadingText));
+refs.loadingText.classList.remove('isHidden');
+console.log(refs.loadingText);
 
-  API.fetchBreeds('https://api.thecatapi.com/v1/breeds')
-    .then(response => response.json())
-    .then(renderFetchBreedsList)
-    .catch()
-    .finally(isHidden(refs.loadingText));
-}
+API.axiosBreeds('https://api.thecatapi.com/v1/breeds')
+  .then(renderAxiosBreedsList)
+  .catch()
+  .finally(isHidden(refs.loadingText));
+
+API.fetchBreeds('https://api.thecatapi.com/v1/breeds')
+  .then(response => response.json())
+  .then(renderFetchBreedsList)
+  .catch()
+  .finally(() => {
+    isHidden(refs.loadingText);
+  });
 
 function renderAxiosBreedsList(breedsList) {
   //   console.log(breedsList);
