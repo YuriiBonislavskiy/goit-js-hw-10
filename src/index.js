@@ -6,7 +6,7 @@ import './css/common.css';
 import './css/slimselect.css';
 import * as API from './cat-api.js';
 
-const errorMassage = `Oops! Something went wrong! Try reloading the page!`;
+const errorMassage = `😪👎 Oops! Something went wrong! Try reloading the page!`;
 
 // refs.loadingText.classList.add('isHidden');
 // refs.errorText.classList.add('isHidden');

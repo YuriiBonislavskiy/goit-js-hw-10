@@ -3,6 +3,7 @@ import axios from 'axios';
 axios.defaults.headers.common['x-api-key'] =
   'live_B8OSCQ5VxA8A6jzoI9ViRvuQqj7cRhUSI2DCw8ixHFLrbBY78Sg2z8hVzy0Cjfyi';
 const Axios = require('axios').default;
+const apiKey = 'live_B8OSCQ5VxA8A6jzoI9ViRvuQqj7cRhUSI2DCw8ixHFLrbBY78Sg2z8hVzy0Cjfyi';
 
 function axiosBreeds(hiddenTag, url) {
   hiddenTag.classList.toggle('isHidden');
@@ -21,7 +22,7 @@ function fetchBreeds(hiddenTag, url) {
     // console.log(hiddenTag);
   return fetch(url, {
     headers: {
-      'x-api-key': axios.defaults.headers.common['x-api-key'],
+      'x-api-key': apiKey,
     },
   });
 }
@@ -31,7 +32,7 @@ function fetchCatByBreed(breedId) {
     `https://api.thecatapi.com/v1/images/search?breed_ids=${breedId}`,
     {
       headers: {
-        'x-api-key': axios.defaults.headers.common['x-api-key'],
+        'x-api-key': apiKey,
       },
     }
   );
