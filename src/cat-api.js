@@ -18,7 +18,7 @@ function axiosCatByBreed(breedId) {
 
 function fetchBreeds(hiddenTag, url) {
     hiddenTag.classList.toggle('isHidden');
-    console.log(hiddenTag);
+    // console.log(hiddenTag);
   return fetch(url, {
     headers: {
       'x-api-key': axios.defaults.headers.common['x-api-key'],

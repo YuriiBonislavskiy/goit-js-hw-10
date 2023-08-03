@@ -11,13 +11,7 @@ import * as API from './cat-api.js';
 function isHidden(evt) {
   //   console.log('uoouipoipipipi');
   evt.classList.toggle('isHidden');
-  console.log(evt);
-}
-
-function noHidden(evt) {
-  console.log(evt);
-  evt.classList.remove('isHidden');
-  console.log(evt);
+//   console.log(evt);
 }
 
 function selectBuilds(selectElement) {
@@ -76,7 +70,7 @@ function onFetchBreedsSelected(evt) {
 }
 
 function axiosRenderSelectBreed(breed) {
-  console.log(breed);
+  //   console.log(breed);
   const { url } = breed.data[0];
   const { name, description, temperament } = breed.data[0].breeds[0];
   const catInfoString = makecatInfoString(url, name, description, temperament);
@@ -118,8 +112,9 @@ function makecatInfoString(url, name, description, temperament) {
 }
 
 function outputBreed(catInfoString) {
-    refs.catInfo.innerHTML = catInfoString;
+  refs.catInfo.innerHTML = catInfoString;
+  const currentCatImg = document.querySelector('#current-cat-img');
+  currentCatImg.addEventListener('load', event => {
     isHidden(refs.loadingText);
-//   const currentCatImg = document.querySelector('#current-cat-img');
-//   currentCatImg.addEventListener('load', isHidden(refs.loadingText));
+  });
 }
