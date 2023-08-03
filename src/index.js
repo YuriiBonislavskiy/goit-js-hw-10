@@ -1,9 +1,12 @@
 import getRefs from './get-refs';
 const refs = getRefs();
+import Notiflix from 'notiflix';
 import SlimSelect from 'slim-select';
 import './css/common.css';
 import './css/slimselect.css';
 import * as API from './cat-api.js';
+
+const errorMassage = `Oops! Something went wrong! Try reloading the page!`;
 
 // refs.loadingText.classList.add('isHidden');
 // refs.errorText.classList.add('isHidden');
@@ -11,7 +14,7 @@ import * as API from './cat-api.js';
 function isHidden(evt) {
   //   console.log('uoouipoipipipi');
   evt.classList.toggle('isHidden');
-//   console.log(evt);
+  //   console.log(evt);
 }
 
 function selectBuilds(selectElement) {
@@ -26,19 +29,27 @@ function selectBuilds(selectElement) {
 
 API.axiosBreeds(refs.loadingText, 'https://api.thecatapi.com/v1/breeds')
   .then(renderAxiosBreedsList)
-  .catch()
+  .catch(error => {
+    Notiflix.Notify.failure(errorMassage, {
+      timeout: 2000,
+    });
+  })
   .finally(isHidden(refs.loadingText));
 
 API.fetchBreeds(refs.loadingText, 'https://api.thecatapi.com/v1/breeds')
   .then(response => response.json())
   .then(renderFetchBreedsList)
-  .catch()
+  .catch(error => {
+    Notiflix.Notify.failure(errorMassage, {
+      timeout: 2000,
+    });
+  })
   .finally(() => {
     isHidden(refs.loadingText);
   });
 
 function renderAxiosBreedsList(breedsList) {
-  //   console.log(breedsList);
+  // console.log(breedsList);
   const breeds = breedsList.data.map(
     ({ id, name }) => `<option value="${id}">${name}</option>`
   );
@@ -46,26 +57,56 @@ function renderAxiosBreedsList(breedsList) {
     `<option data-placeholder="true"></option><option value="qwqwq">Error Positionn</option>` +
     breeds.join('');
   refs.axiosBreedSelect.insertAdjacentHTML('afterbegin', breedsString);
-  refs.fetchBreedSelect.insertAdjacentHTML('afterbegin', breedsString);
+  // refs.fetchBreedSelect.insertAdjacentHTML('afterbegin', breedsString);
   selectBuilds(refs.axiosBreedSelect);
+  isHidden(refs.axiosBreedSelect);
+}
+
+function renderFetchBreedsList(breedsList) {
+  //   console.log(breedsList);
+  const breeds = breedsList.map(
+    ({ id, name }) => `<option value="${id}">${name}</option>`
+  );
+  const breedsString =
+    `<option data-placeholder="true"></option><option value="qwqwq">Error Positionn</option>` +
+    breeds.join('');
+  // refs.axiosBreedSelect.insertAdjacentHTML('afterbegin', breedsString);
+  refs.fetchBreedSelect.insertAdjacentHTML('afterbegin', breedsString);
+  selectBuilds(refs.fetchBreedSelect);
+  isHidden(refs.fetchBreedSelect);
 }
 
 refs.axiosBreedSelect.addEventListener('change', onAxiosBreedsSelected);
 refs.fetchBreedSelect.addEventListener('change', onFetchBreedsSelected);
 
 function onAxiosBreedsSelected(evt) {
+  refs.catInfo.innerHTML = '';
   isHidden(refs.loadingText);
   const breedId = evt.target.value;
-  API.axiosCatByBreed(breedId).then(axiosRenderSelectBreed).catch().finally();
+  API.axiosCatByBreed(breedId)
+    .then(axiosRenderSelectBreed)
+    .catch(error => {
+      Notiflix.Notify.failure(errorMassage, {
+        timeout: 2000,
+      });
+      isHidden(refs.loadingText);
+    })
+    .finally();
 }
 
 function onFetchBreedsSelected(evt) {
+  refs.catInfo.innerHTML = '';
   isHidden(refs.loadingText);
   const breedId = evt.target.value;
   API.fetchCatByBreed(breedId)
     .then(response => response.json())
     .then(fetchRenderSelectBreed)
-    .catch()
+    .catch(error => {
+      Notiflix.Notify.failure(errorMassage, {
+        timeout: 2000,
+      });
+      isHidden(refs.loadingText);
+    })
     .finally();
 }
 
@@ -83,19 +124,6 @@ function fetchRenderSelectBreed(breed) {
   const { name, description, temperament } = breed[0].breeds[0];
   const catInfoString = makecatInfoString(url, name, description, temperament);
   outputBreed(catInfoString);
-}
-
-function renderFetchBreedsList(breedsList) {
-  //   console.log(breedsList);
-  const breeds = breedsList.map(
-    ({ id, name }) => `<option value="${id}">${name}</option>`
-  );
-  const breedsString =
-    `<option data-placeholder="true"></option><option value="qwqwq">Error Positionn</option>` +
-    breeds.join('');
-  refs.axiosBreedSelect.insertAdjacentHTML('afterbegin', breedsString);
-  refs.fetchBreedSelect.insertAdjacentHTML('afterbegin', breedsString);
-  selectBuilds(refs.fetchBreedSelect);
 }
 
 function makecatInfoString(url, name, description, temperament) {
