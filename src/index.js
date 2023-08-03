@@ -13,9 +13,9 @@ function isReady() {
     refs.loadingText.classList.toggle('isHidden');
 }
 
-function selectBuilds() {
-  const selectCatsBreed = new SlimSelect({
-    select: refs.breedSelect,
+function selectBuilds(selectElement) {
+  new SlimSelect({
+    select: selectElement,
     settings: {
       showSearch: false,
       placeholderText: 'Choose a breed',
@@ -35,20 +35,23 @@ function renderBreedsList(breedsList) {
   const breedsString =
     `<option data-placeholder="true"></option><option value="qwqwq">Error Positionn</option>` +
     breeds.join('');
-  refs.breedSelect.insertAdjacentHTML('afterbegin', breedsString);
+    refs.axiosBreedSelect.insertAdjacentHTML('afterbegin', breedsString);
+    refs.fetchBreedSelect.insertAdjacentHTML('afterbegin', breedsString);
   refs.loadingText.classList.toggle('isHidden');
-  selectBuilds();
+    selectBuilds(refs.axiosBreedSelect);
+    selectBuilds(refs.fetchBreedSelect);
 }
 
-refs.breedSelect.addEventListener('change', onBreesSelected);
+refs.axiosBreedSelect.addEventListener('change', onBreesSelected);
+refs.fetchBreedSelect.addEventListener('change', onBreesSelected);
 
 function onBreesSelected(evt) {
-  const breedId = refs.breedSelect.value;
+  const breedId = evt.target.value;
   API.fetchCatByBreed(refs.loadingText, breedId).then(renderSelectBreed);
 }
 
 function renderSelectBreed(breed) {
-//   console.log(breed);
+  console.log(breed);
   const { url } = breed.data[0];
   const { name, description, temperament } = breed.data[0].breeds[0];
   const catInfoString = makecatInfoString(url, name, description, temperament);

@@ -15,6 +15,17 @@ body {
 .isHidden {
   display: none;
 }
+
+.select-boxes {
+  display: flex;
+  width: 100%;
+}
+
+.select-box {
+  min-width: 50%;
+  padding-right: 50px;
+}
+
 /* img {
   display: block;
   max-width: 100%;
